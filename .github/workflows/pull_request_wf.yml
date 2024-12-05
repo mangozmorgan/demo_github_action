@@ -1,23 +1,21 @@
-
 name: Deploy Astro site to Pages
 
 on:
   push:
     branches: ["main"]
-
   workflow_dispatch:
-    
+
 permissions:
   contents: read
   pages: write
   id-token: write
-  
+
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 env:
-  BUILD_PATH: "." 
+  BUILD_PATH: "."
 
 jobs:
   build:
@@ -85,20 +83,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Notify Google Chat
-        if: ${{ always() }} 
+        if: ${{ always() }}
         uses: SimonScholz/google-chat-action@main
         with:
           webhookUrl: ${{ secrets.GOOGLE_CHAT_URL }}
           title: ${{ needs.build.result == 'success' && needs.deploy.result == 'success' && 'Mise à jour du site 🎉' || 'Échec de la mise à jour ❌' }}
-          subtitle: ${{ needs.build.result == 'success' && needs.deploy.result =='success' && 'Les modifications ont été fusionnées avec succès sur main! 😻' || 'Il y à eu une erreur lors de la mise en ligne..' }}
-          additionalSections: |
-            [              
+          subtitle: ${{ needs.build.result == 'success' && needs.deploy.result == 'success' && 'Les modifications ont été fusionnées avec succès sur main! 😻' || 'Il y a eu une erreur lors de la mise en ligne..' }}
+          additionalSections: >
+            [
               {
                 "header": "Détails de la fusion",
                 "collapsible": true,
                 "widgets": [
-                  { "decoratedText": { "text": "- Titre du commit  : ${{github.event.commits[0].message}}" } },
-                  { "decoratedText": { "text": "- Auteur : ${{ github.event.commits[1].author.username }}" } }
+                  { "decoratedText": { "text": "- Titre du commit : ${{ github.event.commits[0].message || 'Non disponible' }}" } },
+                  { "decoratedText": { "text": "- Auteur : ${{ github.event.commits[0].author.username || 'Non disponible' }}" } }
                 ]
               },
               {
@@ -110,7 +108,3 @@ jobs:
                 ]
               }
             ]
-
-      
-  
-  
