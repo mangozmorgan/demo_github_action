@@ -89,8 +89,8 @@ jobs:
         uses: SimonScholz/google-chat-action@main
         with:
           webhookUrl: ${{ secrets.GOOGLE_CHAT_URL }}
-          title: ${{ needs.build.result == 'success' && needs.deploy.result == 'success' && 'Déploiement réussi !!! 🚀' || 'Échec du déploiement ❌' }}
-          subtitle: ${{ needs.build.result == 'success' && needs.deploy.result =='success' && 'Les modifications ont été fusionnées avec succès ! 😻' || 'Il y à eu une erreur lors de la mise en ligne..' }}
+          title: ${{ needs.build.result == 'success' && needs.deploy.result == 'success' && 'Mise à jour du site 🎉' || 'Échec de la mise à jour ❌' }}
+          subtitle: ${{ needs.build.result == 'success' && needs.deploy.result =='success' && 'Les modifications ont été fusionnées avec succès sur main! 😻' || 'Il y à eu une erreur lors de la mise en ligne..' }}
           additionalSections: |
             [              
               {
