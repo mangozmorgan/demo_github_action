@@ -1,21 +1,23 @@
+
 name: Deploy Astro site to Pages
 
 on:
   push:
     branches: ["main"]
-  workflow_dispatch:
 
+  workflow_dispatch:
+    
 permissions:
   contents: read
   pages: write
   id-token: write
-
+  
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 env:
-  BUILD_PATH: "."
+  BUILD_PATH: "." 
 
 jobs:
   build:
@@ -77,26 +79,26 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
+  
   notify_pull_request_google_chat:
     needs: [build, deploy]
     runs-on: ubuntu-latest
     steps:
       - name: Notify Google Chat
-        if: ${{ always() }}
+        if: ${{ always() }} # Utilisez 'always' pour vous assurer que la notification est envoyée même en cas d'échec des étapes précédentes
         uses: SimonScholz/google-chat-action@main
         with:
           webhookUrl: ${{ secrets.GOOGLE_CHAT_URL }}
-          title: ${{ needs.build.result == 'success' && needs.deploy.result == 'success' && 'Mise à jour du site 🎉' || 'Échec de la mise à jour ❌' }}
-          subtitle: ${{ needs.build.result == 'success' && needs.deploy.result == 'success' && 'Les modifications ont été fusionnées avec succès sur main! 😻' || 'Il y a eu une erreur lors de la mise en ligne..' }}
-          additionalSections: >
-            [
+          title: ${{ needs.build.result == 'success' && needs.deploy.result == 'success' && 'Mise à jour du repository ! 🚀' || 'Échec de mise à jour du repository ❌' }}
+          subtitle: ${{ needs.build.result == 'success' && needs.deploy.result =='success' && 'Les modifications ont été fusionnées avec succès ! 😻' || 'Il y à eu une erreur lors de la mise en ligne..' }}
+          additionalSections: |
+            [              
               {
                 "header": "Détails de la fusion",
                 "collapsible": true,
                 "widgets": [
-                  { "decoratedText": { "text": "- Titre du commit : ${{ github.event.commits[0].message || 'Non disponible' }}" } },
-                  { "decoratedText": { "text": "- Auteur : ${{ github.event.commits[0].author.username || 'Non disponible' }}" } }
+                  { "decoratedText": { "text": "- Titre du commit  : ${{github.event.commits[0].message}}" } },
+                  { "decoratedText": { "text": "- Auteur : ${{ github.event.commits[1].author.username }}" } }
                 ]
               },
               {
@@ -108,3 +110,4 @@ jobs:
                 ]
               }
             ]
+
