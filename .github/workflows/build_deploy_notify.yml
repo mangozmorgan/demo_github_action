@@ -80,17 +80,17 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
   
-  notify_pull_request_google_chat:
+  notify_merge_on_google_chat:
     needs: [build, deploy]
     runs-on: ubuntu-latest
     steps:
       - name: Notify Google Chat
-        if: ${{ always() }} # Utilisez 'always' pour vous assurer que la notification est envoyée même en cas d'échec des étapes précédentes
+        if: ${{ always() }} #Utilisez 'always' pour vous assurer que la notification est envoyée même en cas d'échec des étapes précédentes
         uses: SimonScholz/google-chat-action@main
         with:
           webhookUrl: ${{ secrets.GOOGLE_CHAT_URL }}
-          title: ${{ needs.build.result == 'success' && needs.deploy.result == 'success' && 'Déploiement réussi 🚀' || 'Échec du déploiement ❌' }}
-          subtitle: ${{ needs.build.result == 'success' && needs.deploy.result =='success' && 'Les modifications ont été fusionnées avec succès ! 😻' || 'Il y à eu une erreur lors de la mise en ligne..' }}
+          title: ${{ needs.build.result == 'success' && needs.deploy.result == 'success' && 'Merge et Déploiement réussi 🚀' || 'Échec du déploiement et du merge ❌' }}
+          subtitle: ${{ needs.build.result == 'success' && needs.deploy.result =='success' && 'Les modifications ont été fusionnées avec succès ! 😻' || 'Il y à eu une erreur lors de la fusion..' }}
           additionalSections: |
             [              
               {
@@ -98,7 +98,7 @@ jobs:
                 "collapsible": true,
                 "widgets": [
                   { "decoratedText": { "text": "- Titre du commit  : ${{github.event.commits[0].message}}" } },
-                  { "decoratedText": { "text": "- Auteur : ${{ github.event.commits[1].author.username }}" } }
+                  { "decoratedText": { "text": "- Auteur : ${{ github.event.commits[0].author.username }}" } }
                 ]
               },
               {
